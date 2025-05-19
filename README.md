@@ -2,10 +2,7 @@
 
 # Conversational RAG with PDF Uploads & Chat History
 
-This project is a **Streamlit-based Conversational Retrieval-Augmented Generation (RAG) system** that allows users to:
-- Upload PDF documents
-- Interact with them via a conversational chatbot
-- Maintain context-aware chat history across multiple sessions
+A powerful Conversational Retrieval-Augmented Generation (RAG) system that allows users to upload PDF documents and interact with their content through natural language questions. This system leverages LangChain, Groq LLMs, HuggingFace Embeddings, and Streamlit to create a seamless and intelligent PDF-based Q&A interface — with memory!
 
 It uses **LangChain**, **Groq Llama3**, **HuggingFace embeddings**, and **Chroma vector store** under the hood.
 
