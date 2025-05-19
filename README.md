@@ -2,9 +2,7 @@
 
 # Conversational RAG with PDF Uploads & Chat History
 
-A powerful Conversational Retrieval-Augmented Generation (RAG) system that allows users to upload PDF documents and interact with their content through natural language questions. This system leverages LangChain, Groq LLMs, HuggingFace Embeddings, and Streamlit to create a seamless and intelligent PDF-based Q&A interface — with memory!
-
-It uses **LangChain**, **Groq Llama3**, **HuggingFace embeddings**, and **Chroma vector store** under the hood.
+A powerful Conversational Retrieval-Augmented Generation (RAG) system that allows users to upload PDF documents and interact with their content through natural language questions. This system leverages **LangChain**, **Groq LLMs**, **HuggingFace Embeddings**, and **Streamlit** to create a seamless and intelligent PDF-based Q&A interface — with memory!
 
 ---
 
@@ -22,8 +20,8 @@ It uses **LangChain**, **Groq Llama3**, **HuggingFace embeddings**, and **Chroma
 
 - `Streamlit` for frontend interface  
 - `LangChain` for orchestration  
-- `Groq LLaMA3` as LLM backend  
-- `HuggingFace Embeddings`  
+- `Groq Llama3-8b-8192` as LLM backend  
+- `HuggingFace Embeddings all-MiniLM-L6-v2` for vector embeddings
 - `Chroma` as vector DB  
 - `dotenv` for environment variables  
 
