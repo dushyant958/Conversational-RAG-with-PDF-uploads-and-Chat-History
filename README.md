@@ -1,5 +1,3 @@
-# Conversational-RAG-with-PDF-uploads-and-Chat-History
-
 # Conversational RAG with PDF Uploads & Chat History
 
 A powerful Conversational Retrieval-Augmented Generation (RAG) system that allows users to upload PDF documents and interact with their content through natural language questions. This system leverages **LangChain**, **Groq LLMs**, **HuggingFace Embeddings**, and **Streamlit** to create a seamless and intelligent PDF-based Q&A interface — with memory!
