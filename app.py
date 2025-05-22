@@ -11,48 +11,58 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.runnables.history import RunnableWithMessageHistory
 import os
-
+import chromadb
+import tempfile
 
 from dotenv import load_dotenv
 load_dotenv()
 
 os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
-embeddings = HuggingFaceEmbeddings(model_name = "all-MiniLM-L6-v2")
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-st.title("Conversational RAG with PDF uploads and Chat History")
+st.title("Conversational RAG with PDF Uploads")
 st.write("Upload PDFs and chat with their content")
 
-api_key = st.text_input("Enter your GROQ API key", type = "password")
+api_key = st.text_input("Enter your GROQ API key", type="password")
 
 if api_key:
-    llm = ChatGroq(groq_api_key = api_key, model_name = "Llama3-8b-8192")
+    llm = ChatGroq(groq_api_key=api_key, model_name="Llama3-8b-8192")
 
     # Chat Interface 
-    session_id = st.text_input("Session ID", value = "default_session")
+    session_id = st.text_input("Session ID", value="default_session")
     
     # Managing Chat History
     if "store" not in st.session_state:
         st.session_state.store = {}
 
-    uploaded_files = st.file_uploader("Choose a PDF file", type = "pdf", accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Choose a PDF file", type="pdf", accept_multiple_files=True)
 
     # Process the uploaded files
     documents = []
     if uploaded_files:
         for uploaded_file in uploaded_files:
-            temp_pdf = f"./temp.pdf"
-            with open(temp_pdf, "wb") as file:
-                file.write(uploaded_file.getvalue())
+            # Use temporary file instead of fixed name
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+                temp_file.write(uploaded_file.getvalue())
+                temp_pdf_path = temp_file.name
             
-            loader = PyPDFLoader(temp_pdf)
+            loader = PyPDFLoader(temp_pdf_path)
             docs = loader.load()
             documents.extend(docs)
+            
+            # Clean up temporary file
+            os.unlink(temp_pdf_path)
 
         # Splitting and making embeddings
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size = 5000, chunk_overlap = 600)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=600)
         splits = text_splitter.split_documents(documents)
-        vectorestore = Chroma.from_documents(documents = splits, embedding = embeddings)
-        retriever = vectorestore.as_retriever()   
+        
+        # Alternative fix: Use FAISS instead of ChromaDB to avoid tenant issues
+        from langchain_community.vectorstores import FAISS
+        
+        # Create FAISS vectorstore (no tenant issues)
+        vectorstore = FAISS.from_documents(splits, embeddings)
+        retriever = vectorstore.as_retriever()   
 
         contextualize_q_system_prompt = (
             "Given a chat history and the latest user question "
@@ -109,7 +119,7 @@ if api_key:
         if user_input:
             response = conversational_rag_chain.invoke(
                 {"input": user_input},
-                config = {
+                config={
                     "configurable": {"session_id": session_id}
                 }
             )
